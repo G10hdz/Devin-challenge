@@ -1,0 +1,62 @@
+// Prisma schema for the internal tools kernel PoC.
+// AuditLog is append-only: enforced in the Prisma client extension
+// (src/kernel/db.ts) and by SQLite triggers (see migrations).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String @id @default(cuid())
+  name          String
+  role          String // analyst | approver | admin
+  assignedCases Case[] @relation("assignee")
+}
+
+model Case {
+  id            String  @id @default(cuid())
+  reference     String  @unique
+  applicantName String
+  status        String  @default("pending") // pending | in_review | approved | rejected
+  country       String
+  riskScore     Int
+  assigneeId    String?
+  assignee      User?   @relation("assignee", fields: [assigneeId], references: [id])
+
+  // Set when an analyst moves the case into review. Used to enforce approver != requester.
+  movedToReviewById String?
+
+  // PII fields: masked by default in the UI, reveal requires a reason and is audited.
+  taxId          String
+  documentNumber String
+  dateOfBirth    String
+  email          String
+  phone          String
+  address        String
+
+  decisionReason String?
+  decidedById    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actorName  String
+  actorRole  String
+  action     String // e.g. case.read, case.pii_reveal, case.approve
+  targetType String
+  targetId   String
+  reason     String?
+  metadata   String?
+  createdAt  DateTime @default(now())
+
+  @@index([targetType, targetId])
+}
