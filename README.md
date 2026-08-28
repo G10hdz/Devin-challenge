@@ -25,6 +25,43 @@ npm install && npm run db:seed && npm run dev   # http://localhost:3000
 - **This is a PoC, not production.** The honest list of what a regulated fintech still
   has to build is in [What this is NOT](#what-this-is-not). The licence saving is real;
   it is not free.
+- **The recommendation below is not "rip out Power Apps".** It is: audit the bill first,
+  then move only the apps the platform cannot express safely.
+
+## Recommendation
+
+The honest conclusion from building this, stated before the evidence for it — because the
+case for building is weaker than a demo like this usually implies.
+
+**1. Audit the $250K before deciding anything.** "Replace the platform" is being priced
+against a number nobody has decomposed yet. That bill is typically three different things:
+apps with real daily usage, per-user premium seats for people who sign in twice a year,
+and premium connector/tier charges. If a meaningful share is seats and tiers rather than
+apps, right-sizing the licence returns most of the money at a fraction of the risk — and
+you would have spent engineer-months to reach the same place. Do this first; it is days of
+work, not weeks.
+
+**2. Then decide per app, not for the platform.** The useful question is not build-vs-buy,
+it is *which apps the platform cannot express safely*. An app belongs in code when it has
+requirements the low-code tool cannot enforce — read-level audit, separation of duties,
+PII reveal-with-reason, custom workflow logic that compliance has to sign off. That is the
+KYC queue, which is why it is the app in this repository. A refunds dashboard and a
+feature-flag admin panel probably do not clear that bar, and should stay where they are.
+One app moving is a small, reversible bet; a migration is not.
+
+**3. Price ownership, not construction.** Building these apps is the cheap part — this PoC
+took two hours, and a competent engineer would not need much longer for the skeleton. What
+you take on afterwards is the expensive part, and it does not appear on any invoice: code
+review of everything shipped to production, upgrades and dependency patching, hosting and
+on-call, access reviews, incident response, and producing the audit evidence the vendor
+currently produces for you. Saving one engineer's salary in licence fees is not a saving if
+owning the platform consumes one engineer's attention — and unlike the licence, that cost
+is paid by the people you would rather have working on the product.
+
+**Where Devin changes this calculation:** it lowers the cost of building and of the
+maintenance tail, which is what makes a per-app move viable at all. It does not remove
+review, testing, or compliance sign-off from your engineers. Treat it as a reason the
+marginal app is affordable, not as a reason to own more platform than you need.
 
 ## Why KYC review was chosen for the demo
 
@@ -96,6 +133,11 @@ at ~$250K/year ≈ ~$5K/week):
 The one-time kernel investment is the risk; the marginal per-app cost is the return. The
 break-even is not "does app #1 cost less than $83K" — it is "does app #13 still cost you
 almost nothing", and with a kernel it does.
+
+Note the last row, though: it is the one that decides this, and it is the one a build
+business case usually omits. Construction is a one-off; ownership is forever, and at 0.5
+FTE it is roughly a whole licence's worth of engineer time every year — spent by engineers
+you hired to build the product.
 
 **What you give up by leaving the platform:** somebody else's uptime, their compliance
 attestations, their upgrade treadmill, and a citizen-developer story for non-engineers.
