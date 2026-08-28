@@ -39,6 +39,7 @@ export default async function RootLayout({
               <select
                 id="actorId"
                 name="actorId"
+                key={actor.id}
                 defaultValue={actor.id}
                 className="rounded border px-2 py-1"
               >
