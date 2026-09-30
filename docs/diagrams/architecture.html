@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devin-challenge — architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #eb6c36;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1100px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-muted); margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400; letter-spacing: -0.02em; line-height: 1.15;
+      margin-bottom: 0.4rem;
+    }
+    .sub { color: var(--color-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    svg { width: 100%; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · Diagram Design</p>
+    <h1>internal-tools kernel — PoC</h1>
+    <p class="sub">The kernel is the asset: 260 lines give every future app RBAC, read-level audit and PII masking. The KYC queue is ~620 lines of UI on top.</p>
+
+    <svg viewBox="0 0 1100 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="dv-title dv-desc">
+      <title id="dv-title">kernel + KYC app sobre Prisma</title>
+      <desc id="dv-desc">src/kernel contiene rbac, session, guard, audit (log de reads), pii (mask con reveal-on-reason) y db (Prisma/SQLite); src/app tiene las paginas del KYC queue (cases, audit, reveal) y actions.ts; prisma/schema.prisma y seed.ts poblan el demo; tests/kernel.test.ts cubre el kernel; DEVIN_SESSION.md documenta el build.</desc>
+      <defs>
+        <marker id="dv-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="dv-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+      </defs>
+
+      <rect width="1100" height="460" fill="#f5f5f5"/>
+
+      <!-- KYC app -->
+      <rect x="40" y="60" width="330" height="200" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="205" y="84" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">SRC/APP — KYC REVIEW QUEUE (~620 LOC)</text>
+      <g font-family="'Geist Mono', monospace" font-size="9.5">
+        <rect x="60" y="100" width="290" height="32" rx="4" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="0.8"/><text x="205" y="121" fill="#2d3142" text-anchor="middle">cases/ — cola de revision KYC</text>
+        <rect x="60" y="140" width="290" height="32" rx="4" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="0.8"/><text x="205" y="161" fill="#2d3142" text-anchor="middle">audit/ — quien leyo que registro</text>
+        <rect x="60" y="180" width="290" height="32" rx="4" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="0.8"/><text x="205" y="201" fill="#2d3142" text-anchor="middle">reveal.ts — PII con razon registrada</text>
+      </g>
+      <text x="205" y="236" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">approver ≠ requester — enforced en server</text>
+      <text x="205" y="250" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">actions.ts — server actions</text>
+
+      <!-- kernel -->
+      <rect x="430" y="60" width="330" height="240" rx="8" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.35)" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="595" y="84" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">SRC/KERNEL/ — ~260 LOC · EL ACTIVO</text>
+      <g font-family="'Geist Mono', monospace" font-size="9.5">
+        <rect x="450" y="100" width="290" height="30" rx="4" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="0.8"/><text x="595" y="120" fill="#2d3142" text-anchor="middle">rbac.ts — roles + permissions object</text>
+        <rect x="450" y="138" width="290" height="30" rx="4" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="0.8"/><text x="595" y="158" fill="#2d3142" text-anchor="middle">guard.ts — enforce en cada handler</text>
+        <rect x="450" y="176" width="290" height="30" rx="4" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="0.8"/><text x="595" y="196" fill="#2d3142" text-anchor="middle">session.ts</text>
+        <rect x="450" y="214" width="290" height="30" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="0.9"/><text x="595" y="234" fill="#2d3142" text-anchor="middle">audit.ts — log de READS (no solo writes)</text>
+        <rect x="450" y="252" width="290" height="30" rx="4" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="0.9"/><text x="595" y="272" fill="#2d3142" text-anchor="middle">pii.ts — mask por default + reveal-on-reason</text>
+      </g>
+      <text x="595" y="296" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">tests/kernel.test.ts — cobertura del kernel</text>
+
+      <!-- data -->
+      <rect x="820" y="100" width="240" height="120" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="940" y="130" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">prisma/</text>
+      <text x="940" y="152" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">schema.prisma + migrations</text>
+      <text x="940" y="170" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">seed.ts — demo data</text>
+      <text x="940" y="194" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">kernel/db.ts — acceso</text>
+
+      <!-- pitch -->
+      <rect x="820" y="250" width="240" height="80" rx="6" fill="rgba(45,49,66,0.05)" stroke="rgba(45,49,66,0.32)" stroke-width="0.8"/>
+      <text x="940" y="274" fill="#2d3142" font-size="11.5" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">PoC — build vs buy</text>
+      <text x="940" y="294" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">app #4-13 = modelo Prisma +</text>
+      <text x="940" y="310" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">1 linea de perms + 2 paginas</text>
+
+      <!-- edges -->
+      <path d="M 370 160 L 430 160" fill="none" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#dv-arrow-accent)"/>
+      <path d="M 760 160 L 820 160" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#dv-arrow)"/>
+      <path d="M 760 260 L 780 260 L 780 290 L 820 290" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#dv-arrow)"/>
+
+      <!-- footer -->
+      <rect x="40" y="360" width="1020" height="56" rx="6" fill="rgba(45,49,66,0.05)" stroke="rgba(45,49,66,0.32)" stroke-width="0.8"/>
+      <text x="550" y="384" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">npm install && db:seed && dev — la demo completa en 3 comandos</text>
+      <text x="550" y="404" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">PoC, no produccion — README lista honestamente lo que falta · DEVIN_SESSION.md</text>
+    </svg>
+  </div>
+</body>
+</html>
