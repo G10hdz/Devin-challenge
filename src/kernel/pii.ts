@@ -1,6 +1,6 @@
 /**
  * PII masking helper. Fields listed here render masked unless the caller has
- * explicitly revealed them with a reason (which is audited — see audit.ts).
+ * explicitly revealed them with a reason (which is audited, see audit.ts).
  */
 
 export const PII_FIELDS = [

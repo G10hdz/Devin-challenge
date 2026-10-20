@@ -31,7 +31,7 @@ export default async function CaseDetailPage({
         where: { id },
         include: { assignee: true },
       });
-      // Every open of a case record is audited — this is the behaviour the
+      // Every open of a case record is audited: this is the behaviour the
       // low-code platform does not give us.
       await logAudit({
         actor,
@@ -155,7 +155,7 @@ export default async function CaseDetailPage({
               </div>
               {isMover && (
                 <p className="text-amber-700">
-                  You moved this case into review — separation of duties will block your
+                  You moved this case into review; separation of duties will block your
                   decision.
                 </p>
               )}
