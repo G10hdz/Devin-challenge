@@ -10,7 +10,7 @@ description: How to run and adversarially test the internal-tools kernel PoC + K
 npm install && npm run db:seed && npm run dev   # http://localhost:3000
 ```
 - No auth, no external services, no secrets required. SQLite lives at `prisma/dev.db`.
-- Do NOT run `pkill -f "next dev"` from the agent shell — the pattern matches the shell's own
+- Do NOT run `pkill -f "next dev"` from the agent shell: the pattern matches the shell's own
   command line and kills your session. Use `fuser -k 3000/tcp` or `pkill -f next-server` instead.
 - Inspect/choose fixtures without a GUI:
   `python3 -c "import sqlite3;print(sqlite3.connect('prisma/dev.db').execute('select reference,id,status,movedToReviewById from \"Case\"').fetchall())"`
@@ -25,7 +25,7 @@ npm install && npm run db:seed && npm run dev   # http://localhost:3000
 
 ## Adversarial techniques that work here
 - Client-side `required` fields (PII reveal reason, decision reason) are bypassed by typing
-  whitespace — the server trims and rejects, which is what you actually want to prove.
+  whitespace; the server trims and rejects, which is what you actually want to prove.
 - To prove server-side RBAC (not just hidden UI): render an approver's decide form in tab A,
   switch the role to an analyst in tab B (shared cookie), then submit tab A's form. Expect
   `Role "analyst" is not permitted to perform "case:approve"` and an `access.denied` audit row.

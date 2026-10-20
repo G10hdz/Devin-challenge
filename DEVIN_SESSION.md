@@ -59,8 +59,8 @@ All tiers (P1, P2, P3) were completed.
 ## Decisions I made on my own
 
 - **Where "requester" comes from.** A KYC case has no explicit requester, so
-  approver ≠ requester is enforced against `Case.movedToReviewById` — the analyst who
-  moved the case into review — stored on the case at that transition rather than derived
+  approver ≠ requester is enforced against `Case.movedToReviewById`, the analyst
+  who moved the case into review, stored on the case at that transition rather than derived
   from the audit log at decision time. Simplest interpretation that still demonstrates
   separation of duties.
 - **What counts as a read.** One `case.read` row per detail-page open, and one
@@ -81,13 +81,13 @@ All tiers (P1, P2, P3) were completed.
   lines in `guard.ts` and is directly on-thesis.
 - **Admin has every permission** including approve/reject; only admin can reassign and
   read `/audit`.
-- **Next.js 15.4.7 instead of the create-next-app default 15.1.6** — the scaffolded
+- **Next.js 15.4.7 instead of the create-next-app default 15.1.6**: the scaffolded
   version carries a published security advisory.
 
 ## Things I got wrong and corrected
 
 - Exported a non-async helper (`revealCookie`) from a `"use server"` file, which Next
-  rejects — moved it to `src/app/reveal.ts`.
+  rejects, moved it to `src/app/reveal.ts`.
 - Initially planned to enforce append-only only in the Prisma extension. That is
   application etiquette, not a data-layer guarantee, so I added the SQLite triggers and
   the test now asserts raw SQL is blocked too.
@@ -99,4 +99,4 @@ All tiers (P1, P2, P3) were completed.
 
 Well inside the 2-hour box; no tier was cut. The remaining risk is not scope, it is that
 the pieces production needs (real IdP, WORM audit, Postgres) are listed rather than
-built — see "What this is NOT" in the README.
+built; see "What this is NOT" in the README.

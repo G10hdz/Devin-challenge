@@ -30,7 +30,7 @@ export default async function AuditPage() {
               <td className="px-3 py-2">
                 {r.targetType}:{r.targetId}
               </td>
-              <td className="px-3 py-2">{r.reason ?? "—"}</td>
+              <td className="px-3 py-2">{r.reason ?? "-"}</td>
             </tr>
           ))}
         </tbody>

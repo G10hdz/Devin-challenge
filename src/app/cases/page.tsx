@@ -114,7 +114,7 @@ export default async function CasesPage({
               <td className="px-3 py-2 font-mono text-xs">{c.reference}</td>
               <td className="px-3 py-2">{c.applicantName}</td>
               <td className="px-3 py-2">{c.status}</td>
-              <td className="px-3 py-2">{c.assignee?.name ?? "—"}</td>
+              <td className="px-3 py-2">{c.assignee?.name ?? "-"}</td>
               <td className="px-3 py-2">{c.riskScore}</td>
               <td className="px-3 py-2 text-right">
                 <Link href={`/cases/${c.id}`} className="text-blue-700 underline">
