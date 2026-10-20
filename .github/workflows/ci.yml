@@ -27,6 +27,7 @@ jobs:
       - run: npm ci
       # El quickstart del README, tal cual: seed contra el SQLite local.
       - run: npm run db:seed
+      - run: npm run lint
       - run: npm test
       - run: npm run build
         env:
